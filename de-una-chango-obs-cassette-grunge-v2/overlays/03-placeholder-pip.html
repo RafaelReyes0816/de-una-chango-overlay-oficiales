@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=514, height=289">
+  <title>Cam 1 · En espera · Cassette Grunge</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .no-signal {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255, 176, 0, 0.16), transparent 58%),
+        linear-gradient(145deg, #292724 0%, #292724 55%, #38342F 100%);
+      color: var(--blanco);
+    }
+
+    .no-signal::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.22;
+      background-image:
+        linear-gradient(rgba(255, 176, 0, 0.13) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 176, 0, 0.13) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 80%);
+    }
+
+    .no-signal__mark {
+      position: relative;
+      z-index: 1;
+      width: 52px;
+      height: 52px;
+      opacity: 0.95;
+      animation: floatMark 4.8s ease-in-out infinite;
+    }
+
+    .no-signal__badge {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(155, 51, 41, 0.45);
+      background: rgba(56, 52, 47, 0.85);
+      color: var(--coral);
+      font-family: var(--font-brand);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .no-signal__cam {
+      position: relative;
+      z-index: 1;
+      color: var(--turquesa);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .no-signal__sub {
+      position: relative;
+      z-index: 1;
+      color: rgba(233, 225, 212, 0.56);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+  </style>
+  <link rel="stylesheet" href="css/cassette-grunge.css">
+</head>
+<body class="scene scene-overlay">
+  <div class="no-signal">
+    <img class="no-signal__mark" src="assets/logo-mark.svg" alt="">
+    <div class="no-signal__badge"><span class="live-dot"></span> Señal en espera</div>
+    <div class="no-signal__cam">Cam 1 · Mesa general</div>
+    <div class="no-signal__sub">DE UNA, CHANGO! · Tarija</div>
+  </div>
+</body>
+</html>

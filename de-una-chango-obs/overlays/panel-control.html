@@ -1,0 +1,1535 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DE UNA, CHANGO! · Centro de Control en Vivo</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background:
+        radial-gradient(circle at 88% 8%, rgba(44, 234, 163, 0.12), transparent 36%),
+        radial-gradient(circle at 10% 90%, rgba(242, 100, 68, 0.1), transparent 38%),
+        linear-gradient(160deg, #050d18 0%, #07111f 52%, #0b192c 100%);
+      color: var(--blanco);
+      font-family: var(--font-body);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(44, 234, 163, 0.35) rgba(7, 17, 31, 0.8);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(7, 17, 31, 0.8);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(44, 234, 163, 0.35);
+      border-radius: 999px;
+    }
+
+    .dock {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 12px 12px 76px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* ---------- Aviso cuando se abre sin el servidor ---------- */
+    .server-banner {
+      display: none;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(242, 100, 68, 0.7);
+      background: linear-gradient(135deg, rgba(242, 100, 68, 0.22), rgba(11, 25, 44, 0.96));
+      color: var(--blanco);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .server-banner.is-visible {
+      display: block;
+    }
+
+    .server-banner strong {
+      color: var(--mostaza);
+    }
+
+    /* ---------- Cabecera compacta ---------- */
+    .dock-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 1px solid rgba(44, 234, 163, 0.34);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 45%),
+        linear-gradient(180deg, rgba(16, 36, 61, 0.98) 0%, rgba(7, 17, 31, 0.99) 100%);
+      box-shadow: 0 14px 32px -12px rgba(0, 0, 0, 0.78);
+    }
+
+    .dock-header__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .dock-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .dock-brand img {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+    }
+
+    .dock-brand__title {
+      font-family: var(--font-brand);
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      white-space: nowrap;
+    }
+
+    .dock-brand__title span {
+      color: var(--turquesa);
+    }
+
+    .dock-brand__sub {
+      color: var(--mostaza);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .status-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .dock-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(44, 234, 163, 0.42);
+      background: rgba(11, 25, 44, 0.9);
+      color: var(--turquesa);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .dock-status.is-offline {
+      border-color: rgba(242, 100, 68, 0.55);
+      color: var(--coral);
+    }
+
+    /* ---------- Barra de Escenas de OBS (Switcher rápido) ---------- */
+    .scene-switcher {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+    }
+
+    @media (max-width: 560px) {
+      .scene-switcher {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .scene-btn {
+      appearance: none;
+      padding: 7px 6px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(5, 13, 24, 0.78);
+      color: rgba(247, 250, 252, 0.78);
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .scene-btn:hover {
+      border-color: rgba(44, 234, 163, 0.5);
+      color: var(--blanco);
+    }
+
+    .scene-btn.is-program {
+      border-color: var(--coral);
+      background: linear-gradient(135deg, rgba(242, 100, 68, 0.32), rgba(242, 100, 68, 0.12));
+      color: var(--blanco);
+      box-shadow: 0 0 16px -4px rgba(242, 100, 68, 0.65);
+    }
+
+    /* ---------- Barra de Temporizador Siempre Visible ---------- */
+    .timer-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(5, 13, 24, 0.72);
+    }
+
+    .timer-strip__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .timer-strip__clock {
+      font-family: var(--font-brand);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      color: var(--turquesa);
+      line-height: 1;
+    }
+
+    .timer-strip__clock.is-paused {
+      color: var(--mostaza);
+    }
+
+    .timer-strip__clock.is-done {
+      color: var(--coral);
+      font-size: 15px;
+      letter-spacing: 0.04em;
+    }
+
+    .timer-strip__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .timer-strip__label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247, 250, 252, 0.56);
+    }
+
+    .timer-strip__state {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--mostaza);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .timer-strip__actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* ---------- Navegación de Pestañas ---------- */
+    .dock-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .dock-tab {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      background: rgba(11, 25, 44, 0.75);
+      color: rgba(247, 250, 252, 0.72);
+      padding: 8px 6px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-align: center;
+    }
+
+    .dock-tab:hover {
+      border-color: rgba(44, 234, 163, 0.4);
+      color: var(--blanco);
+    }
+
+    .dock-tab.is-active {
+      border-color: var(--turquesa);
+      background: rgba(44, 234, 163, 0.15);
+      color: var(--turquesa);
+      box-shadow: 0 0 16px -4px rgba(44, 234, 163, 0.45);
+    }
+
+    /* ---------- Paneles y Tarjetas ---------- */
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-pane.is-active {
+      display: flex;
+    }
+
+    .panel-card {
+      position: relative;
+      padding: 14px;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .panel-card[data-accent="turquesa"] { border-color: rgba(44, 234, 163, 0.28); }
+    .panel-card[data-accent="mostaza"]  { border-color: rgba(229, 184, 75, 0.28); }
+    .panel-card[data-accent="coral"]    { border-color: rgba(242, 100, 68, 0.28); }
+
+    .panel-card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .panel-card__title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-brand);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blanco);
+    }
+
+    .panel-card__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.8);
+    }
+
+    .panel-card__tag {
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: rgba(var(--accent-rgb), 0.14);
+      color: var(--accent);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ---------- Controles de Formulario ---------- */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+
+    .field-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field label {
+      color: rgba(247, 250, 252, 0.68);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 9px;
+      background: rgba(5, 13, 24, 0.82);
+      color: var(--blanco);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--turquesa);
+      box-shadow: 0 0 0 2px rgba(44, 234, 163, 0.2);
+    }
+
+    /* ---------- Botones ---------- */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .btn {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(16, 36, 61, 0.9);
+      color: var(--blanco);
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+      user-select: none;
+    }
+
+    .btn:hover {
+      border-color: rgba(255, 255, 255, 0.34);
+      background: rgba(24, 50, 82, 0.95);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn--sm {
+      padding: 5px 9px;
+      font-size: 10px;
+      border-radius: 7px;
+    }
+
+    .btn--primary {
+      flex: 1;
+      border-color: rgba(44, 234, 163, 0.65);
+      background: linear-gradient(135deg, rgba(44, 234, 163, 0.24), rgba(44, 234, 163, 0.1));
+      color: var(--turquesa);
+    }
+
+    .btn--primary:hover {
+      background: linear-gradient(135deg, rgba(44, 234, 163, 0.34), rgba(44, 234, 163, 0.16));
+      border-color: var(--turquesa);
+    }
+
+    .btn--mostaza {
+      border-color: rgba(229, 184, 75, 0.55);
+      background: rgba(229, 184, 75, 0.14);
+      color: var(--mostaza);
+    }
+
+    .btn--mostaza:hover {
+      background: rgba(229, 184, 75, 0.24);
+      border-color: var(--mostaza);
+    }
+
+    .btn--coral {
+      border-color: rgba(242, 100, 68, 0.55);
+      background: rgba(242, 100, 68, 0.14);
+      color: var(--coral);
+    }
+
+    .btn--coral:hover {
+      background: rgba(242, 100, 68, 0.24);
+      border-color: var(--coral);
+    }
+
+    /* Grid de botones rápidos de alerta */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .preset-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 9px 11px;
+      border-radius: 11px;
+      border: 1px solid rgba(var(--accent-rgb), 0.38);
+      background:
+        linear-gradient(135deg, rgba(var(--accent-rgb), 0.14) 0%, rgba(11, 25, 44, 0.9) 100%);
+      color: var(--blanco);
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+    }
+
+    .preset-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .preset-btn__top {
+      color: var(--accent);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .preset-btn__title {
+      font-family: var(--font-brand);
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--blanco);
+    }
+
+    /* Switch de visibilidad Lower Third */
+    .toggle-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 11px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(5, 13, 24, 0.65);
+    }
+
+    .toggle-bar__label {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(247, 250, 252, 0.85);
+    }
+
+    /* Grilla de equipo */
+    .team-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    /* Toast inferior de confirmación */
+    .toast {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 50;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(44, 234, 163, 0.55);
+      background: rgba(7, 17, 31, 0.96);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.8);
+      color: var(--turquesa);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="dock">
+    <!-- AVISO SI NO HAN INICIADO EL SERVIDOR PUENTE -->
+    <div class="server-banner" id="server-banner">
+      <strong>⚠ Servidor Puente desconectado:</strong> Para que tus cambios se reflejen al instante dentro de OBS, haz doble clic en <strong>INICIAR_CONTROL_EN_VIVO.bat</strong> en la carpeta del proyecto.
+    </div>
+
+    <!-- CABECERA STICKY + MONITOR DE TEMPORIZADOR -->
+    <header class="dock-header">
+      <div class="dock-header__top">
+        <div class="dock-brand">
+          <img src="assets/logo-mark.svg" alt="Chango">
+          <div>
+            <div class="dock-brand__title">DE UNA, <span>CHANGO!</span></div>
+            <div class="dock-brand__sub">Centro de Control en Vivo</div>
+          </div>
+        </div>
+        <div class="status-badges">
+          <div class="dock-status is-offline" id="bridge-indicator">
+            <span class="live-dot"></span>
+            <span id="bridge-indicator-text">Conectando puente...</span>
+          </div>
+          <div class="dock-status is-offline" id="obs-ws-indicator" title="Conexión opcional a OBS WebSocket (puerto 4455)">
+            <span id="obs-ws-indicator-text">OBS WS: Off</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botonera de Cambio Rápido de Escena (si OBS WebSocket está activo) -->
+      <div class="scene-switcher" id="scene-switcher">
+        <button type="button" class="scene-btn" data-scene="01 - Inicio (Espera)">01 · Inicio</button>
+        <button type="button" class="scene-btn" data-scene="02 - General (La Banda)">02 · La Banda</button>
+        <button type="button" class="scene-btn" data-scene="03 - Explicación (Pizarra)">03 · Pizarra</button>
+        <button type="button" class="scene-btn" data-scene="04 - Modo Hacemos (Demos)">04 · Demos</button>
+        <button type="button" class="scene-btn" data-scene="05 - Cierre (Chau Chango)">05 · Cierre</button>
+      </div>
+
+      <!-- Control directo del Temporizador de la Escena 01 -->
+      <div class="timer-strip">
+        <div class="timer-strip__left">
+          <div class="timer-strip__clock" id="dock-timer-display">05:00</div>
+          <div class="timer-strip__meta">
+            <span class="timer-strip__label">Escena 01 · Inicio</span>
+            <span class="timer-strip__state" id="dock-timer-state">En espera</span>
+          </div>
+        </div>
+        <div class="timer-strip__actions">
+          <button type="button" class="btn btn--sm btn--primary" id="btn-timer-reset" title="Reiniciar cuenta regresiva">Reiniciar</button>
+          <button type="button" class="btn btn--sm btn--mostaza" id="btn-timer-pause" title="Pausar o reanudar">Pausar / Seguir</button>
+          <button type="button" class="btn btn--sm" id="btn-timer-minus" title="Restar 1 minuto">-1m</button>
+          <button type="button" class="btn btn--sm" id="btn-timer-plus" title="Sumar 1 minuto">+1m</button>
+          <button type="button" class="btn btn--sm btn--coral" id="btn-timer-finish" title="Mostrar ARRANCAMOS ahora">¡Ya!</button>
+        </div>
+      </div>
+
+      <!-- Pestañas -->
+      <nav class="dock-tabs">
+        <button type="button" class="dock-tab is-active" data-tab="tab-aire">1. Al Aire &amp; Reto</button>
+        <button type="button" class="dock-tab" data-tab="tab-alertas">2. Alertas &amp; Chat</button>
+        <button type="button" class="dock-tab" data-tab="tab-cams">3. Cámaras &amp; Equipo</button>
+        <button type="button" class="dock-tab" data-tab="tab-obs">4. OBS &amp; Audio</button>
+      </nav>
+    </header>
+
+    <!-- ===============================================================
+         PESTAÑA 1: AL AIRE, RETO DEL DÍA Y ESCENA 02 (LOWER THIRD)
+         =============================================================== -->
+    <section class="tab-pane is-active" id="tab-aire">
+      <div class="panel-card" data-accent="mostaza">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Reto del Día &amp; Datos</span>
+          <span class="panel-card__tag">Escenas 01 · 03 · 04 · 05</span>
+        </div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="inp-reto">Reto del día (Escena 01 y Escena 04)</label>
+            <input type="text" id="inp-reto" placeholder="RETO #001: IA PARA EMPRENDER">
+          </div>
+
+          <div class="field">
+            <label for="inp-lema">Lema / Barra inferior (Escenas 03 y 04)</label>
+            <input type="text" id="inp-lema" placeholder="Desde Tarija para el mundo">
+          </div>
+
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-redes">Redes (@usuario)</label>
+              <input type="text" id="inp-redes" placeholder="@deunachango">
+            </div>
+            <div class="field">
+              <label for="inp-hashtag">Hashtag</label>
+              <input type="text" id="inp-hashtag" placeholder="#DeUnaChango">
+            </div>
+          </div>
+
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-ciudad">Ciudad / Origen</label>
+              <input type="text" id="inp-ciudad" placeholder="Tarija, Bolivia">
+            </div>
+            <div class="field">
+              <label for="inp-minutos">Minutos Timer (Escena 01)</label>
+              <input type="number" id="inp-minutos" min="1" max="60" step="1" value="5">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-save-general">Aplicar cambios al aire</button>
+        </div>
+      </div>
+
+      <!-- Control del Lower Third de la Escena 02 (La Banda) -->
+      <div class="panel-card" data-accent="turquesa">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Lower Third · Escena 02 (La Banda)</span>
+          <span class="panel-card__tag">Escena 02</span>
+        </div>
+
+        <div class="toggle-bar">
+          <span class="toggle-bar__label">Tarjeta Lower Third en pantalla</span>
+          <button type="button" class="btn btn--sm btn--primary" id="btn-toggle-lt2">Visible: SÍ</button>
+        </div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="inp-lt2-kicker">Etiqueta superior (Kicker)</label>
+            <input type="text" id="inp-lt2-kicker" placeholder="De una, Chango! · La banda">
+          </div>
+          <div class="field">
+            <label for="inp-lt2-title">Titular principal (Grande)</label>
+            <input type="text" id="inp-lt2-title" placeholder="Desde Tarija para el mundo">
+          </div>
+          <div class="field">
+            <label for="inp-lt2-sub">Subtítulo inferior</label>
+            <input type="text" id="inp-lt2-sub" placeholder="Tecnología, demos en vivo y buena vibra">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-save-lt2">Actualizar Lower Third</button>
+          <button type="button" class="btn btn--mostaza" id="btn-lt2-use-reto" title="Pone el Reto del día en el Lower Third de Escena 02">Poner Reto del Día</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         PESTAÑA 2: ALERTAS EN VIVO Y CHAT
+         =============================================================== -->
+    <section class="tab-pane" id="tab-alertas">
+      <div class="panel-card" data-accent="coral">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Disparador Rápido de Alertas</span>
+          <span class="panel-card__tag">1 Clic al Aire</span>
+        </div>
+
+        <div class="preset-grid">
+          <button type="button" class="preset-btn" data-accent="mostaza" id="preset-reto">
+            <span class="preset-btn__top">⚡ Reto en vivo</span>
+            <span class="preset-btn__title">Mostrar Reto del Día</span>
+          </button>
+
+          <button type="button" class="preset-btn" data-accent="turquesa" id="preset-demo">
+            <span class="preset-btn__top">🔥 Modo Hacemos</span>
+            <span class="preset-btn__title">Demo en Pantalla</span>
+          </button>
+
+          <button type="button" class="preset-btn" data-accent="coral" id="preset-redes">
+            <span class="preset-btn__top">📲 Comunidad</span>
+            <span class="preset-btn__title">Síguenos en Redes</span>
+          </button>
+
+          <button type="button" class="preset-btn" data-accent="turquesa" id="preset-saludo">
+            <span class="preset-btn__top">🎸 La Banda</span>
+            <span class="preset-btn__title">De Tarija al Mundo</span>
+          </button>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--coral" id="btn-alert-hide" style="width: 100%;">Ocultar alerta activa ahora</button>
+        </div>
+      </div>
+
+      <!-- Alerta personalizada -->
+      <div class="panel-card" data-accent="turquesa">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Alerta Personalizada</span>
+          <span class="panel-card__tag">alertas.html</span>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-alert-icon">Icono (1-2 car.)</label>
+              <input type="text" id="inp-alert-icon" maxlength="2" value="!">
+            </div>
+            <div class="field">
+              <label for="inp-alert-accent">Color de Acento</label>
+              <select id="inp-alert-accent">
+                <option value="turquesa">Turquesa (#2CEAA3)</option>
+                <option value="mostaza">Mostaza (#E5B84B)</option>
+                <option value="coral">Coral (#F26444)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-alert-label">Etiqueta superior</label>
+              <input type="text" id="inp-alert-label" value="En vivo ahora">
+            </div>
+            <div class="field">
+              <label for="inp-alert-duration">Duración (seg)</label>
+              <input type="number" id="inp-alert-duration" min="2" max="30" value="6">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="inp-alert-user">Titular / Nombre principal</label>
+            <input type="text" id="inp-alert-user" placeholder="Ej. Nuevo comentario o invitado">
+          </div>
+
+          <div class="field">
+            <label for="inp-alert-detail">Subtítulo / Detalle</label>
+            <input type="text" id="inp-alert-detail" placeholder="Ej. Gracias por sumarte a la transmisión">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-alert-custom">Lanzar alerta en pantalla</button>
+        </div>
+      </div>
+
+      <!-- Inyectar mensaje en el Chat del Stream -->
+      <div class="panel-card" data-accent="mostaza">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Mensaje al Chat en Pantalla</span>
+          <span class="panel-card__tag">chat.html</span>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-chat-user">Usuario / Autor</label>
+              <input type="text" id="inp-chat-user" value="deunachango">
+            </div>
+            <div class="field">
+              <label for="inp-chat-color">Color</label>
+              <select id="inp-chat-color">
+                <option value="#2CEAA3">Turquesa</option>
+                <option value="#E5B84B">Mostaza</option>
+                <option value="#F26444">Coral</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="inp-chat-text">Mensaje para mostrar en el widget de chat</label>
+            <input type="text" id="inp-chat-text" placeholder="Escribe una pregunta o aviso para el chat...">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-chat-send">Enviar al Chat</button>
+          <button type="button" class="btn btn--coral" id="btn-chat-clear">Limpiar Chat</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         PESTAÑA 3: CÁMARAS (ESCENA 04) Y EQUIPO (ESCENA 05)
+         =============================================================== -->
+    <section class="tab-pane" id="tab-cams">
+      <div class="panel-card" data-accent="turquesa">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Lower Thirds de Cámaras</span>
+          <span class="panel-card__tag">Escena 04 · Demos</span>
+        </div>
+
+        <div class="field-grid">
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-cam1-name">Cam 1 · Nombre (Coral)</label>
+              <input type="text" id="inp-cam1-name" placeholder="La Banda">
+            </div>
+            <div class="field">
+              <label for="inp-cam1-sub">Cam 1 · Subtítulo</label>
+              <input type="text" id="inp-cam1-sub" placeholder="Mesa general · Cam 01">
+            </div>
+          </div>
+
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-cam2-name">Cam 2 · Nombre (Mostaza)</label>
+              <input type="text" id="inp-cam2-name" placeholder="Pizarra en vivo">
+            </div>
+            <div class="field">
+              <label for="inp-cam2-sub">Cam 2 · Subtítulo</label>
+              <input type="text" id="inp-cam2-sub" placeholder="Explicación · Cam 02">
+            </div>
+          </div>
+
+          <div class="field-row-2">
+            <div class="field">
+              <label for="inp-cam3-name">Cam 3 · Nombre (Turquesa)</label>
+              <input type="text" id="inp-cam3-name" placeholder="Clareth & Emilse">
+            </div>
+            <div class="field">
+              <label for="inp-cam3-sub">Cam 3 · Subtítulo</label>
+              <input type="text" id="inp-cam3-sub" placeholder="Demos en vivo · Cam 03">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-save-cams">Actualizar las 3 Cámaras</button>
+        </div>
+      </div>
+
+      <!-- Créditos del Equipo (Escena 05) -->
+      <div class="panel-card" data-accent="mostaza">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Créditos del Equipo</span>
+          <span class="panel-card__tag">Escena 05 · Cierre</span>
+        </div>
+
+        <div class="field-grid" id="team-editor"></div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-save-team">Actualizar Créditos</button>
+        </div>
+      </div>
+
+      <!-- Restauración de Fábrica -->
+      <div class="panel-card" data-accent="coral">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Restaurar Valores por Defecto</span>
+          <span class="panel-card__tag">Sistema</span>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--coral" id="btn-reset-defaults" style="flex: 1;">Restaurar valores de fábrica</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===============================================================
+         PESTAÑA 4: ENLACE DIRECTO CON OBS WEBSOCKET (ESCENAS, AUDIO, CACHÉ)
+         =============================================================== -->
+    <section class="tab-pane" id="tab-obs">
+      <div class="panel-card" data-accent="turquesa">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Control Directo de OBS Studio (WebSocket)</span>
+          <span class="panel-card__tag">Puerto 4455</span>
+        </div>
+
+        <p style="font-size: 12px; color: rgba(247, 250, 252, 0.78); line-height: 1.45;">
+          Para cambiar escenas de OBS, silenciar micrófonos y recargar cachés desde aquí: en OBS ve a <strong>Herramientas &gt; Ajustes del servidor WebSocket</strong>, marca <strong>Habilitar servidor WebSocket</strong> (puerto <code>4455</code>) y desmarca la autenticación (o pega tu contraseña abajo).
+        </p>
+
+        <div class="field-row-2">
+          <div class="field">
+            <label for="inp-obs-url">URL WebSocket de OBS</label>
+            <input type="text" id="inp-obs-url" value="ws://127.0.0.1:4455">
+          </div>
+          <div class="field">
+            <label for="inp-obs-pass">Contraseña (dejar vacío si no usa)</label>
+            <input type="password" id="inp-obs-pass" placeholder="Sin contraseña">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--primary" id="btn-obs-connect">Conectar con OBS</button>
+          <button type="button" class="btn btn--mostaza" id="btn-obs-refresh-browsers" title="Obliga a OBS a recargar todos los archivos HTML de las escenas">🔄 Recargar todos los Overlays en OBS</button>
+        </div>
+      </div>
+
+      <div class="panel-card" data-accent="coral">
+        <div class="panel-card__head">
+          <span class="panel-card__title"><span class="panel-card__dot"></span>Control Rápido de Audio en OBS</span>
+          <span class="panel-card__tag">Mezclador</span>
+        </div>
+
+        <div class="preset-grid">
+          <button type="button" class="btn" data-mute-input="Mesa General (Mics)">🎙 Mute/Unmute Mesa General</button>
+          <button type="button" class="btn" data-mute-input="Mic Juan Pablo (OBS)">🎧 Mute/Unmute Mic Juan Pablo</button>
+          <button type="button" class="btn" data-mute-input="Audio PC / Demo">💻 Mute/Unmute Audio PC</button>
+          <button type="button" class="btn" data-mute-input="Música Rock (Inicio)">🎸 Mute/Unmute Música</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">Cambios aplicados al aire</div>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script>
+    (function () {
+      var toastEl = document.getElementById("toast");
+      var toastTimer = null;
+
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("is-visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function () {
+          toastEl.classList.remove("is-visible");
+        }, 2500);
+      }
+
+      /* ---------- Pestañas ---------- */
+      var tabButtons = document.querySelectorAll(".dock-tab");
+      var tabPanes = document.querySelectorAll(".tab-pane");
+      tabButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var targetId = btn.getAttribute("data-tab");
+          tabButtons.forEach(function (b) { b.classList.toggle("is-active", b === btn); });
+          tabPanes.forEach(function (p) { p.classList.toggle("is-active", p.id === targetId); });
+        });
+      });
+
+      /* ---------- Estado de conexión al Servidor Puente (4545) ---------- */
+      var bridgeBadge = document.getElementById("bridge-indicator");
+      var bridgeText = document.getElementById("bridge-indicator-text");
+      var serverBanner = document.getElementById("server-banner");
+
+      function updateBridgeStatus(connected) {
+        if (connected) {
+          bridgeBadge.classList.remove("is-offline");
+          bridgeText.textContent = "Puente Activo";
+          serverBanner.classList.remove("is-visible");
+        } else {
+          bridgeBadge.classList.add("is-offline");
+          bridgeText.textContent = "Puente Offline";
+          serverBanner.classList.add("is-visible");
+        }
+      }
+
+      /* ---------- Carga de estado en los inputs ---------- */
+      var lt2Visible = true;
+
+      function updateLt2Button() {
+        var btn = document.getElementById("btn-toggle-lt2");
+        btn.textContent = lt2Visible ? "Visible: SÍ" : "Oculto: NO";
+        btn.className = lt2Visible ? "btn btn--sm btn--primary" : "btn btn--sm btn--coral";
+      }
+
+      function renderTeamInputs(equipo) {
+        var container = document.getElementById("team-editor");
+        while (container.firstChild) {
+          container.removeChild(container.firstChild);
+        }
+        var list = Array.isArray(equipo) ? equipo : [];
+        for (var i = 0; i < 6; i += 1) {
+          var item = list[i] || { nombre: "", rol: "" };
+          var row = document.createElement("div");
+          row.className = "team-row";
+
+          var fName = document.createElement("div");
+          fName.className = "field";
+          var inpName = document.createElement("input");
+          inpName.type = "text";
+          inpName.placeholder = "Nombre " + (i + 1);
+          inpName.value = typeof item === "string" ? item : (item.nombre || "");
+          inpName.setAttribute("data-team-name", String(i));
+          fName.appendChild(inpName);
+
+          var fRole = document.createElement("div");
+          fRole.className = "field";
+          var inpRole = document.createElement("input");
+          inpRole.type = "text";
+          inpRole.placeholder = "Rol " + (i + 1);
+          inpRole.value = typeof item === "object" && item ? (item.rol || "") : "";
+          inpRole.setAttribute("data-team-role", String(i));
+          fRole.appendChild(inpRole);
+
+          row.appendChild(fName);
+          row.appendChild(fRole);
+          container.appendChild(row);
+        }
+      }
+
+      function populateForm(state) {
+        if (!state) return;
+        document.getElementById("inp-reto").value = state.reto || "";
+        document.getElementById("inp-lema").value = state.lema || "";
+        document.getElementById("inp-redes").value = state.redes || "";
+        document.getElementById("inp-hashtag").value = state.hashtag || "";
+        document.getElementById("inp-ciudad").value = state.ciudad || "";
+        document.getElementById("inp-minutos").value = state.countdownMinutes || 5;
+
+        var gl = state.generalLower || {};
+        lt2Visible = gl.visible !== false;
+        updateLt2Button();
+        document.getElementById("inp-lt2-kicker").value = gl.kicker || "De una, Chango! · La banda";
+        document.getElementById("inp-lt2-title").value = gl.title || state.lema || "Desde Tarija para el mundo";
+        document.getElementById("inp-lt2-sub").value = gl.sub || "Tecnología, demos en vivo y buena vibra";
+
+        var cams = state.camaras || {};
+        var c1 = cams.cam1 || {};
+        var c2 = cams.cam2 || {};
+        var c3 = cams.cam3 || {};
+        document.getElementById("inp-cam1-name").value = c1.nombre || "";
+        document.getElementById("inp-cam1-sub").value = c1.subtitulo || "";
+        document.getElementById("inp-cam2-name").value = c2.nombre || "";
+        document.getElementById("inp-cam2-sub").value = c2.subtitulo || "";
+        document.getElementById("inp-cam3-name").value = c3.nombre || "";
+        document.getElementById("inp-cam3-sub").value = c3.subtitulo || "";
+
+        renderTeamInputs(state.equipo);
+      }
+
+      populateForm(window.ChangoLive.getState());
+
+      /* ---------- Acciones Pestaña 1 ---------- */
+      document.getElementById("btn-save-general").addEventListener("click", function () {
+        window.ChangoLive.updateState({
+          reto: document.getElementById("inp-reto").value.trim(),
+          lema: document.getElementById("inp-lema").value.trim(),
+          redes: document.getElementById("inp-redes").value.trim(),
+          hashtag: document.getElementById("inp-hashtag").value.trim(),
+          ciudad: document.getElementById("inp-ciudad").value.trim(),
+          countdownMinutes: Number(document.getElementById("inp-minutos").value || 5)
+        });
+        showToast("✔ Reto y datos actualizados en OBS");
+      });
+
+      document.getElementById("btn-toggle-lt2").addEventListener("click", function () {
+        lt2Visible = !lt2Visible;
+        updateLt2Button();
+        window.ChangoLive.updateState({
+          generalLower: {
+            visible: lt2Visible,
+            kicker: document.getElementById("inp-lt2-kicker").value.trim(),
+            title: document.getElementById("inp-lt2-title").value.trim(),
+            sub: document.getElementById("inp-lt2-sub").value.trim()
+          }
+        });
+        showToast(lt2Visible ? "✔ Lower Third Escena 02 visible" : "Lower Third Escena 02 oculto");
+      });
+
+      document.getElementById("btn-save-lt2").addEventListener("click", function () {
+        window.ChangoLive.updateState({
+          generalLower: {
+            visible: lt2Visible,
+            kicker: document.getElementById("inp-lt2-kicker").value.trim(),
+            title: document.getElementById("inp-lt2-title").value.trim(),
+            sub: document.getElementById("inp-lt2-sub").value.trim()
+          }
+        });
+        showToast("✔ Lower Third de Escena 02 actualizado");
+      });
+
+      document.getElementById("btn-lt2-use-reto").addEventListener("click", function () {
+        var retoActual = document.getElementById("inp-reto").value.trim() || "RETO #001: IA PARA EMPRENDER";
+        document.getElementById("inp-lt2-kicker").value = "Reto del día · En vivo";
+        document.getElementById("inp-lt2-title").value = retoActual;
+        lt2Visible = true;
+        updateLt2Button();
+        window.ChangoLive.updateState({
+          generalLower: {
+            visible: true,
+            kicker: "Reto del día · En vivo",
+            title: retoActual,
+            sub: document.getElementById("inp-lt2-sub").value.trim()
+          }
+        });
+        showToast("⚡ Reto enviado al Lower Third de Escena 02");
+      });
+
+      /* ---------- Control del Temporizador (Escena 01) ---------- */
+      document.getElementById("btn-timer-reset").addEventListener("click", function () {
+        var mins = Number(document.getElementById("inp-minutos").value || 5);
+        window.ChangoLive.sendCommand("timer-cmd", { action: "reset", minutes: mins });
+        showToast("⏱ Temporizador reiniciado a " + mins + ":00");
+      });
+
+      document.getElementById("btn-timer-pause").addEventListener("click", function () {
+        window.ChangoLive.sendCommand("timer-cmd", { action: "toggle-pause" });
+        showToast("⏱ Pausa / Reanudar enviado");
+      });
+
+      document.getElementById("btn-timer-minus").addEventListener("click", function () {
+        window.ChangoLive.sendCommand("timer-cmd", { action: "add-seconds", seconds: -60 });
+        showToast("⏱ -1 minuto en el temporizador");
+      });
+
+      document.getElementById("btn-timer-plus").addEventListener("click", function () {
+        window.ChangoLive.sendCommand("timer-cmd", { action: "add-seconds", seconds: 60 });
+        showToast("⏱ +1 minuto en el temporizador");
+      });
+
+      document.getElementById("btn-timer-finish").addEventListener("click", function () {
+        window.ChangoLive.sendCommand("timer-cmd", { action: "finish-now" });
+        showToast("🚀 ¡ARRANCAMOS en pantalla!");
+      });
+
+      /* ---------- Alertas Rápidas y Personalizadas ---------- */
+      document.getElementById("preset-reto").addEventListener("click", function () {
+        var st = window.ChangoLive.getState();
+        window.ChangoLive.sendCommand("alert", {
+          icon: "!",
+          accent: "mostaza",
+          label: "Reto del día · En vivo",
+          user: st.reto || "RETO #001: IA PARA EMPRENDER",
+          detail: "Participa en el chat con " + (st.hashtag || "#DeUnaChango"),
+          duration: 6500
+        });
+        showToast("⚡ Alerta de Reto disparada");
+      });
+
+      document.getElementById("preset-demo").addEventListener("click", function () {
+        var st = window.ChangoLive.getState();
+        var cam3 = (st.camaras && st.camaras.cam3 && st.camaras.cam3.nombre) || "Clareth & Emilse";
+        window.ChangoLive.sendCommand("alert", {
+          icon: ">",
+          accent: "turquesa",
+          label: "Modo Hacemos · Demo en vivo",
+          user: cam3,
+          detail: "Código y tecnología en pantalla ahora",
+          duration: 6500
+        });
+        showToast("🔥 Alerta de Demo disparada");
+      });
+
+      document.getElementById("preset-redes").addEventListener("click", function () {
+        var st = window.ChangoLive.getState();
+        window.ChangoLive.sendCommand("alert", {
+          icon: "@",
+          accent: "coral",
+          label: "Súmate a la comunidad",
+          user: (st.redes || "@deunachango") + " · " + (st.hashtag || "#DeUnaChango"),
+          detail: "Tecnología en vivo desde " + (st.ciudad || "Tarija, Bolivia"),
+          duration: 6500
+        });
+        showToast("📲 Alerta de Redes disparada");
+      });
+
+      document.getElementById("preset-saludo").addEventListener("click", function () {
+        var st = window.ChangoLive.getState();
+        window.ChangoLive.sendCommand("alert", {
+          icon: "★",
+          accent: "turquesa",
+          label: st.programa || "DE UNA, CHANGO!",
+          user: st.lema || "Desde Tarija para el mundo",
+          detail: "Rock & Tech en vivo · 1080p60",
+          duration: 6500
+        });
+        showToast("🎸 Saludo de la Banda disparado");
+      });
+
+      document.getElementById("btn-alert-hide").addEventListener("click", function () {
+        window.ChangoLive.sendCommand("alert-hide", {});
+        showToast("Alerta ocultada");
+      });
+
+      document.getElementById("btn-alert-custom").addEventListener("click", function () {
+        var userText = document.getElementById("inp-alert-user").value.trim() || "DE UNA, CHANGO!";
+        var detailText = document.getElementById("inp-alert-detail").value.trim() || "En vivo desde Tarija";
+        var durSec = Math.max(2, Number(document.getElementById("inp-alert-duration").value || 6));
+        window.ChangoLive.sendCommand("alert", {
+          icon: document.getElementById("inp-alert-icon").value.trim() || "!",
+          accent: document.getElementById("inp-alert-accent").value || "turquesa",
+          label: document.getElementById("inp-alert-label").value.trim() || "Aviso en vivo",
+          user: userText,
+          detail: detailText,
+          duration: durSec * 1000
+        });
+        showToast("⚡ Alerta personalizada en pantalla");
+      });
+
+      /* ---------- Chat ---------- */
+      function sendChatFromDock() {
+        var textInput = document.getElementById("inp-chat-text");
+        var text = textInput.value.trim();
+        if (!text) {
+          showToast("Escribe un mensaje primero");
+          return;
+        }
+        window.ChangoLive.sendCommand("chat-msg", {
+          user: document.getElementById("inp-chat-user").value.trim() || "deunachango",
+          text: text,
+          color: document.getElementById("inp-chat-color").value || "#2CEAA3"
+        });
+        textInput.value = "";
+        showToast("💬 Mensaje enviado al Chat");
+      }
+
+      document.getElementById("btn-chat-send").addEventListener("click", sendChatFromDock);
+      document.getElementById("inp-chat-text").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendChatFromDock();
+        }
+      });
+
+      document.getElementById("btn-chat-clear").addEventListener("click", function () {
+        window.ChangoLive.sendCommand("chat-clear", {});
+        showToast("Chat limpiado en pantalla");
+      });
+
+      /* ---------- Cámaras (Escena 04) ---------- */
+      document.getElementById("btn-save-cams").addEventListener("click", function () {
+        window.ChangoLive.updateState({
+          camaras: {
+            cam1: {
+              nombre: document.getElementById("inp-cam1-name").value.trim(),
+              subtitulo: document.getElementById("inp-cam1-sub").value.trim()
+            },
+            cam2: {
+              nombre: document.getElementById("inp-cam2-name").value.trim(),
+              subtitulo: document.getElementById("inp-cam2-sub").value.trim()
+            },
+            cam3: {
+              nombre: document.getElementById("inp-cam3-name").value.trim(),
+              subtitulo: document.getElementById("inp-cam3-sub").value.trim()
+            }
+          }
+        });
+        showToast("✔ Nombres de las 3 cámaras actualizados");
+      });
+
+      /* ---------- Equipo (Escena 05) ---------- */
+      document.getElementById("btn-save-team").addEventListener("click", function () {
+        var nameInputs = document.querySelectorAll("[data-team-name]");
+        var roleInputs = document.querySelectorAll("[data-team-role]");
+        var nextTeam = [];
+        for (var i = 0; i < nameInputs.length; i += 1) {
+          var n = nameInputs[i].value.trim();
+          var r = roleInputs[i] ? roleInputs[i].value.trim() : "";
+          if (n) {
+            nextTeam.push({ nombre: n, rol: r || "Equipo" });
+          }
+        }
+        window.ChangoLive.updateState({ equipo: nextTeam });
+        showToast("✔ Créditos del equipo actualizados");
+      });
+
+      /* ---------- Restaurar ---------- */
+      document.getElementById("btn-reset-defaults").addEventListener("click", function () {
+        var restored = window.ChangoLive.resetState();
+        populateForm(restored);
+        showToast("↺ Valores de fábrica restaurados");
+      });
+
+      /* ---------- Telemetría del Temporizador ---------- */
+      var clockEl = document.getElementById("dock-timer-display");
+      var stateEl = document.getElementById("dock-timer-state");
+
+      function renderTimerTelemetry(t) {
+        if (!t) return;
+        clockEl.textContent = t.display || "05:00";
+        clockEl.classList.toggle("is-paused", Boolean(t.paused));
+        clockEl.classList.toggle("is-done", Boolean(t.finished));
+        if (t.finished) {
+          stateEl.textContent = "¡Al aire!";
+        } else if (t.paused) {
+          stateEl.textContent = "En pausa";
+        } else {
+          stateEl.textContent = "Corriendo";
+        }
+      }
+
+      window.ChangoLive.subscribe(
+        function (nextState) {
+          populateForm(nextState);
+        },
+        null,
+        function (telemetry) {
+          renderTimerTelemetry(telemetry);
+        },
+        function (connected) {
+          updateBridgeStatus(connected);
+        }
+      );
+
+      /* ===============================================================
+         CLIENTE NATIVO OBS-WEBSOCKET v5 (Puerto 4455)
+         Permite cambiar escenas, mutear micrófonos y recargar cachés
+         =============================================================== */
+      var obsSocket = null;
+      var obsIdentified = false;
+      var obsIndicator = document.getElementById("obs-ws-indicator");
+      var obsIndicatorText = document.getElementById("obs-ws-indicator-text");
+      var sceneButtons = document.querySelectorAll(".scene-btn");
+
+      var BROWSER_SOURCES = [
+        "Fondo Inicio (Logo + Reto + Timer)",
+        "Overlay General",
+        "Overlay Explicación",
+        "Overlay Chango",
+        "Datos y Redes",
+        "Alertas",
+        "Chat del Stream",
+        "Placa Cierre"
+      ];
+
+      function highlightActiveScene(sceneName) {
+        sceneButtons.forEach(function (btn) {
+          btn.classList.toggle("is-program", btn.getAttribute("data-scene") === sceneName);
+        });
+      }
+
+      async function sha256Base64(str) {
+        var buf = new TextEncoder().encode(str);
+        var hash = await crypto.subtle.digest("SHA-256", buf);
+        var bytes = new Uint8Array(hash);
+        var binary = "";
+        for (var i = 0; i < bytes.byteLength; i += 1) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+      }
+
+      function sendObsRequest(requestType, requestData) {
+        if (!obsSocket || !obsIdentified || obsSocket.readyState !== 1) {
+          showToast("Activa WebSocket en OBS (Herramientas > Ajustes WebSocket)");
+          return;
+        }
+        obsSocket.send(
+          JSON.stringify({
+            op: 6,
+            d: {
+              requestType: requestType,
+              requestId: String(Date.now()) + "-" + Math.random().toString(36).slice(2, 6),
+              requestData: requestData || {}
+            }
+          })
+        );
+      }
+
+      function refreshAllObsBrowsers() {
+        if (!obsSocket || !obsIdentified) {
+          showToast("Conecta OBS WebSocket en la pestaña 4 primero");
+          return;
+        }
+        BROWSER_SOURCES.forEach(function (inputName) {
+          sendObsRequest("PressInputPropertiesButton", {
+            inputName: inputName,
+            propertyName: "refreshnocache"
+          });
+        });
+        showToast("🔄 Todas las fuentes HTML recargadas en OBS");
+      }
+
+      function connectObsWebSocket(manual) {
+        var url = document.getElementById("inp-obs-url").value.trim() || "ws://127.0.0.1:4455";
+        var password = document.getElementById("inp-obs-pass").value;
+
+        if (obsSocket) {
+          try { obsSocket.close(); } catch (e) {}
+        }
+
+        try {
+          obsSocket = new WebSocket(url);
+        } catch (e) {
+          return;
+        }
+
+        obsSocket.onmessage = async function (event) {
+          var msg;
+          try { msg = JSON.parse(event.data); } catch (e) { return; }
+
+          if (msg.op === 0 && msg.d) {
+            // Hello from OBS WebSocket v5
+            var authString = undefined;
+            if (msg.d.authentication && password) {
+              var secret = await sha256Base64(password + msg.d.authentication.salt);
+              authString = await sha256Base64(secret + msg.d.authentication.challenge);
+            }
+            obsSocket.send(
+              JSON.stringify({
+                op: 1,
+                d: {
+                  rpcVersion: 1,
+                  authentication: authString
+                }
+              })
+            );
+          } else if (msg.op === 2) {
+            // Identified
+            obsIdentified = true;
+            obsIndicator.classList.remove("is-offline");
+            obsIndicatorText.textContent = "OBS WS: Activo";
+            sendObsRequest("GetCurrentProgramScene", {});
+            if (manual) {
+              showToast("✔ Conectado directamente a OBS Studio");
+            }
+          } else if (msg.op === 5 && msg.d) {
+            // Event
+            if (msg.d.eventType === "CurrentProgramSceneChanged" && msg.d.eventData) {
+              highlightActiveScene(msg.d.eventData.sceneName);
+            }
+          } else if (msg.op === 7 && msg.d) {
+            // RequestResponse
+            if (
+              msg.d.requestType === "GetCurrentProgramScene" &&
+              msg.d.responseData &&
+              msg.d.responseData.currentProgramSceneName
+            ) {
+              highlightActiveScene(msg.d.responseData.currentProgramSceneName);
+            }
+          }
+        };
+
+        obsSocket.onclose = function () {
+          obsIdentified = false;
+          obsIndicator.classList.add("is-offline");
+          obsIndicatorText.textContent = "OBS WS: Off";
+        };
+      }
+
+      sceneButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var targetScene = btn.getAttribute("data-scene");
+          sendObsRequest("SetCurrentProgramScene", { sceneName: targetScene });
+          highlightActiveScene(targetScene);
+        });
+      });
+
+      document.querySelectorAll("[data-mute-input]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var inputName = btn.getAttribute("data-mute-input");
+          sendObsRequest("ToggleInputMute", { inputName: inputName });
+          showToast("🎚 Audio conmutado: " + inputName);
+        });
+      });
+
+      document.getElementById("btn-obs-connect").addEventListener("click", function () {
+        connectObsWebSocket(true);
+      });
+
+      document.getElementById("btn-obs-refresh-browsers").addEventListener("click", refreshAllObsBrowsers);
+
+      // Intentar conectar automáticamente a OBS WebSocket (silencioso si no está activo)
+      connectObsWebSocket(false);
+    })();
+  </script>
+</body>
+</html>

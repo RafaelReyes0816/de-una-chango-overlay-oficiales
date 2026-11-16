@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>01 - Inicio (Espera) · Cassette Grunge</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .scene-inicio {
+      background:
+        radial-gradient(circle at 82% 20%, rgba(255, 176, 0, 0.16), transparent 34%),
+        radial-gradient(circle at 14% 82%, rgba(155, 51, 41, 0.14), transparent 36%),
+        radial-gradient(circle at 52% 58%, rgba(233, 225, 212, 0.08), transparent 40%),
+        linear-gradient(135deg, #292724 0%, #292724 48%, #38342F 100%);
+    }
+
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.24;
+      background-image:
+        linear-gradient(rgba(255, 176, 0, 0.11) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 176, 0, 0.11) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(circle at 52% 44%, #000 20%, transparent 78%);
+    }
+
+    .bg-stripes {
+      position: absolute;
+      inset: 0;
+      opacity: 0.18;
+      background-image: url("assets/rock-stripes.svg");
+      background-size: 820px 820px;
+      background-position: right -110px bottom -150px;
+      background-repeat: no-repeat;
+    }
+
+    .inicio {
+      position: absolute;
+      inset: 0;
+      padding: 46px 96px 76px;
+    }
+
+    .inicio-topbar {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      padding: 0 22px;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+    }
+
+    .inicio-topbar__left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(233, 225, 212, 0.86);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .inicio-topbar__right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Bento Hero */
+    .hero-bento {
+      position: absolute;
+      left: 96px;
+      top: 138px;
+      width: 1728px;
+      height: 364px;
+      padding: 38px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .hero-bento::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 440px;
+      height: 440px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 176, 0, 0.18) 0%, transparent 68%);
+      pointer-events: none;
+    }
+
+    .logo-block {
+      position: relative;
+      z-index: 1;
+      max-width: 1380px;
+    }
+
+    .logo-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--mostaza);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .logo-kicker::before {
+      content: "";
+      width: 24px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--mostaza);
+    }
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      line-height: 0.86;
+      letter-spacing: -0.06em;
+      white-space: nowrap;
+    }
+
+    .logo-de {
+      color: var(--coral);
+      font-family: var(--font-brand);
+      font-size: 108px;
+      font-weight: 900;
+      text-shadow: 0 18px 46px rgba(155, 51, 41, 0.25);
+    }
+
+    .logo-chango {
+      color: var(--turquesa);
+      font-family: var(--font-brand);
+      font-size: 176px;
+      font-weight: 900;
+      text-shadow: 0 22px 58px rgba(255, 176, 0, 0.24);
+    }
+
+    .logo-rule {
+      width: 720px;
+      height: 6px;
+      margin-top: 20px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--turquesa), var(--mostaza), var(--coral));
+      box-shadow: 0 0 24px rgba(255, 176, 0, 0.28);
+    }
+
+    .tagline {
+      margin-top: 18px;
+      color: rgba(233, 225, 212, 0.78);
+      font-size: 23px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .tagline strong {
+      color: var(--blanco);
+      font-weight: 800;
+    }
+
+    .mark-shell {
+      position: relative;
+      z-index: 1;
+      width: 230px;
+      height: 230px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 176, 0, 0.24);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 48%),
+        radial-gradient(circle at 50% 35%, rgba(255, 176, 0, 0.16), rgba(41, 39, 36, 0.92) 72%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 24px 50px -18px rgba(0, 0, 0, 0.7);
+    }
+
+    .mark {
+      width: 176px;
+      height: 176px;
+      animation: floatMark 5.5s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    /* Bento Inferior: Reto + Timer */
+    .reto-card {
+      left: 96px;
+      top: 528px;
+      width: 1084px;
+      height: 416px;
+      padding: 36px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .reto-card__accent {
+      position: absolute;
+      left: 0;
+      top: 28px;
+      bottom: 28px;
+      width: 6px;
+      border-radius: 0 6px 6px 0;
+      background: linear-gradient(180deg, var(--mostaza), var(--coral));
+      box-shadow: 0 0 18px rgba(233, 225, 212, 0.55);
+    }
+
+    .reto-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .reto-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(233, 225, 212, 0.36);
+      background: rgba(233, 225, 212, 0.1);
+      color: var(--mostaza);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .reto-label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--mostaza);
+    }
+
+    .reto-text {
+      color: var(--blanco);
+      font-family: var(--font-brand);
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.03;
+      letter-spacing: -0.03em;
+    }
+
+    .reto-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: rgba(233, 225, 212, 0.62);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .reto-foot strong {
+      color: var(--turquesa);
+      font-weight: 800;
+    }
+
+    .timer-card {
+      right: 96px;
+      top: 528px;
+      width: 618px;
+      height: 416px;
+      padding: 34px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .timer-head {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .timer-label {
+      color: var(--turquesa);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    .timer {
+      color: var(--blanco);
+      font-family: var(--font-brand);
+      font-size: 142px;
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 16px 44px rgba(255, 176, 0, 0.24);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .timer.is-low {
+      color: var(--mostaza);
+      text-shadow: 0 16px 44px rgba(233, 225, 212, 0.28);
+    }
+
+    .timer.is-done {
+      color: var(--coral);
+      font-size: 68px;
+      letter-spacing: -0.02em;
+      text-shadow: 0 16px 44px rgba(155, 51, 41, 0.3);
+    }
+
+    .timer-bottom {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .timer-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .timer-progress {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--turquesa), var(--mostaza), var(--coral));
+      transform-origin: left center;
+      transform: scaleX(1);
+      transition: transform 0.25s linear;
+      will-change: transform;
+    }
+
+    .timer-hint {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: rgba(233, 225, 212, 0.54);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .timer-hint strong {
+      color: var(--mostaza);
+    }
+  </style>
+  <link rel="stylesheet" href="css/cassette-grunge.css">
+</head>
+<body class="scene scene-inicio">
+  <div class="bg-grid"></div>
+  <div class="bg-stripes"></div>
+
+  <main class="inicio">
+    <header class="inicio-topbar enter enter--down" style="--i: 0">
+      <div class="inicio-topbar__left">
+        <span class="live-dot"></span>
+        <span>Tecnología en vivo desde Tarija · Bolivia</span>
+      </div>
+      <div class="inicio-topbar__right">
+        <span class="pill" data-accent="mostaza"><span class="pill__dot"></span>Rock &amp; Tech</span>
+        <span class="pill" data-accent="turquesa"><span class="pill__dot"></span><span id="redes-top">@deunachango</span></span>
+      </div>
+    </header>
+
+    <section class="card card--accent hero-bento enter" data-accent="turquesa" style="--i: 1">
+      <div class="logo-block">
+        <div class="logo-kicker">El programa de tecnología que suena fuerte</div>
+        <h1 class="logo">
+          <span class="logo-de">DE UNA,</span>
+          <span class="logo-chango">CHANGO!</span>
+        </h1>
+        <div class="logo-rule"></div>
+        <p class="tagline">Nuevo formato · <strong>Desde Tarija para el mundo</strong></p>
+      </div>
+      <div class="mark-shell">
+        <img class="mark" src="assets/logo-mark.svg" alt="Logo DE UNA, CHANGO!">
+      </div>
+    </section>
+
+    <section class="card card--accent reto-card enter enter--left" data-accent="mostaza" style="--i: 2">
+      <div class="reto-card__accent"></div>
+      <div class="reto-head">
+        <div class="reto-label">Reto del día</div>
+        <span class="pill" data-accent="coral"><span class="pill__dot"></span><span id="hashtag-chip">#DeUnaChango</span></span>
+      </div>
+      <div class="reto-text" id="reto">RETO #001: IA PARA EMPRENDER</div>
+      <div class="reto-foot">
+        <span>Demos en vivo · Comunidad · Código real</span>
+        <strong>De Tarija para el mundo</strong>
+      </div>
+    </section>
+
+    <section class="card card--accent timer-card enter enter--right" data-accent="turquesa" style="--i: 3">
+      <div class="timer-head">
+        <span class="timer-label">Arrancamos en</span>
+        <span class="live-badge"><span class="live-dot"></span> En espera</span>
+      </div>
+      <div class="timer" id="countdown">05:00</div>
+      <div class="timer-bottom">
+        <div class="timer-track">
+          <div class="timer-progress" id="countdown-progress"></div>
+        </div>
+        <div class="timer-hint">
+          <span>Rock · Tecnología · Tarija</span>
+          <strong>1080p60</strong>
+        </div>
+      </div>
+    </section>
+
+    <footer class="ticker enter" style="--i: 4">
+      <div class="ticker__track">
+        <span>De una, Chango!</span><span>·</span><span>Tecnología en vivo</span><span>·</span><span>Tarija, Bolivia</span><span>·</span><span>Rock &amp; Tech</span><span>·</span><span>Desde Tarija para el mundo</span><span>·</span>
+        <span>De una, Chango!</span><span>·</span><span>Tecnología en vivo</span><span>·</span><span>Tarija, Bolivia</span><span>·</span><span>Rock &amp; Tech</span><span>·</span><span>Desde Tarija para el mundo</span><span>·</span>
+      </div>
+    </footer>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/countdown.js"></script>
+  <script>
+    (function () {
+      function applyConfig(cfg) {
+        if (!cfg) {
+          return;
+        }
+        var setText = window.ChangoLive ? window.ChangoLive.setText : function (el, val) {
+          if (el) el.textContent = val;
+        };
+        if (cfg.reto) {
+          setText(document.getElementById("reto"), cfg.reto);
+        }
+        if (cfg.redes) {
+          setText(document.getElementById("redes-top"), cfg.redes);
+        }
+        if (cfg.hashtag) {
+          setText(document.getElementById("hashtag-chip"), cfg.hashtag);
+        }
+      }
+
+      var cfg = window.CHANGO_CONFIG || {};
+      applyConfig(cfg);
+      initCountdown(document.getElementById("countdown"), cfg.countdownMinutes);
+
+      if (window.ChangoLive) {
+        window.ChangoLive.subscribe(function (nextState) {
+          applyConfig(nextState);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

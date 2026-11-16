@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=300, height=712">
+  <title>Chat del Stream</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .chat-shell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 40%),
+        linear-gradient(180deg, rgba(11, 25, 44, 0.9) 0%, rgba(7, 17, 31, 0.95) 100%);
+    }
+
+    .chat-mount {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow-y: auto;
+      padding: 12px 12px 8px;
+      scrollbar-width: none;
+    }
+
+    .chat-mount::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Estado limpio en espera silenciosa */
+    .chat-empty {
+      margin: auto 0;
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 55%),
+        rgba(11, 25, 44, 0.65);
+    }
+
+    .chat-empty__dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .chat-empty__dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--turquesa);
+      animation: glowBreath 1.8s ease-in-out infinite;
+    }
+
+    .chat-empty__title {
+      color: rgba(247, 250, 252, 0.86);
+      font-family: var(--font-brand);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .chat-empty__sub {
+      color: var(--mostaza);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    /* Burbuja minimalista oscura con entrada suave */
+    .chat-message {
+      --msg-accent: #2CEAA3;
+      position: relative;
+      padding: 10px 12px 10px 13px;
+      margin-top: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 48%),
+        linear-gradient(180deg, rgba(16, 36, 61, 0.9) 0%, rgba(9, 20, 36, 0.92) 100%);
+      box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.6);
+      animation: chatBubbleIn 0.38s var(--ease-out) both;
+      will-change: transform, opacity;
+    }
+
+    .chat-message::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--msg-accent);
+    }
+
+    .chat-message__head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .chat-message__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--msg-accent);
+    }
+
+    .chat-message__user {
+      color: var(--msg-accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .chat-message__text {
+      color: rgba(247, 250, 252, 0.9);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+
+    .chat-status {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+      background: rgba(5, 13, 24, 0.78);
+      color: rgba(247, 250, 252, 0.52);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .chat-live-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+    }
+
+    @keyframes chatBubbleIn {
+      from {
+        opacity: 0;
+        transform: translate3d(0, 10px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+  </style>
+</head>
+<body class="scene scene-overlay">
+  <div class="chat-shell">
+    <div class="chat-mount" id="chat-mount"></div>
+    <div class="chat-status" id="chat-status">@deunachango · EN VIVO</div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>

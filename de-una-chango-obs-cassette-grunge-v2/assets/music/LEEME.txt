@@ -1,0 +1,14 @@
+MUSICA DE LA PLANTILLA "DE UNA, CHANGO!"
+
+Los archivos rock-instrumental.mp3 y cierre.mp3 incluidos son silencios de 2 segundos
+creados como marcadores de posicion. No contienen musica con derechos de autor.
+
+Para dejar la plantilla lista para emitir:
+
+1. Reemplaza rock-instrumental.mp3 por tu pista de rock instrumental de entrada.
+2. Reemplaza cierre.mp3 por la musica de despedida.
+3. Manten exactamente los mismos nombres de archivo, o vuelve a vincular cada
+   fuente de musica desde OBS (clic derecho > Propiedades > Archivo local).
+
+Recomendacion: usa musica libre de regalias o una pista propia. Evita subir
+musica comercial sin licencia al stream.

@@ -1,0 +1,506 @@
+/* =====================================================================
+   DE UNA, CHANGO! · Sistema visual compartido
+   Bento UI / Tech broadcast. Sin dependencias externas.
+   - Tipografías locales en /fonts (Inter y Montserrat, licencia OFL).
+   - Sin backdrop-filter: en OBS no difumina el video de abajo.
+   - Las animaciones solo usan transform y opacity.
+   ===================================================================== */
+
+/* ---------- Tipografías locales (fuentes variables 100–900) ---------- */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+  src: url("../../fonts/inter-latin-var.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+  src: url("../../fonts/inter-latin-ext-var.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+  src: url("../../fonts/montserrat-latin-var.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+  src: url("../../fonts/montserrat-latin-ext-var.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---------- Tokens ---------- */
+:root {
+  --petroleo: #38342F;
+  --petroleo-2: #413B34;
+  --petroleo-3: #292724;
+  --fondo: #292724;
+  --turquesa: #FFB000;
+  --mostaza: #E9E1D4;
+  --coral: #9B3329;
+  --blanco: #E9E1D4;
+  --tinta: #1B1917;
+
+  --turquesa-rgb: 255, 176, 0;
+  --mostaza-rgb: 233, 225, 212;
+  --coral-rgb: 155, 51, 41;
+
+  /* Color del "passepartout" que rodea a las cámaras: igual a la fuente Fondo #38342F */
+  --matte: #38342F;
+
+  --font-brand: "Montserrat", "Arial Black", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --stagger: 50ms;
+  --enter-duration: 760ms;
+
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+
+  /* Reflejo de luz en la esquina superior izquierda + cuerpo petróleo */
+  --card-bg:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.02) 22%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(180deg, rgba(65, 59, 52, 0.96) 0%, rgba(41, 39, 36, 0.97) 100%);
+  --card-border: rgba(255, 255, 255, 0.09);
+  --card-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    0 18px 40px -12px rgba(0, 0, 0, 0.62),
+    0 42px 80px -28px rgba(0, 0, 0, 0.5);
+
+  --accent: var(--turquesa);
+  --accent-rgb: var(--turquesa-rgb);
+}
+
+[data-accent="turquesa"] { --accent: var(--turquesa); --accent-rgb: var(--turquesa-rgb); }
+[data-accent="mostaza"]  { --accent: var(--mostaza);  --accent-rgb: var(--mostaza-rgb); }
+[data-accent="coral"]    { --accent: var(--coral);    --accent-rgb: var(--coral-rgb); }
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--blanco);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+}
+
+.scene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.scene-overlay {
+  background: transparent;
+}
+
+/* ---------- Tarjeta Bento ---------- */
+.card {
+  position: absolute;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+/* Filo de luz superior: línea fina que se apaga hacia la derecha */
+.card::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 40%;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.card--accent {
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+
+/* ---------- Marco de video (centro 100 % transparente) ---------- */
+.frame {
+  position: absolute;
+  border: 1px solid rgba(var(--accent-rgb), 0.6);
+  border-radius: var(--radius-md);
+  background: transparent;
+  box-shadow:
+    0 0 0 1px rgba(41, 39, 36, 0.55),
+    0 0 26px -6px rgba(var(--accent-rgb), 0.45),
+    0 30px 60px -22px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+}
+
+/* Passepartout: tapa las esquinas rectas del video y lo separa del fondo */
+.frame--matte {
+  box-shadow:
+    0 0 0 6px var(--matte),
+    0 0 0 7px rgba(255, 255, 255, 0.05),
+    0 0 30px -4px rgba(var(--accent-rgb), 0.35),
+    0 34px 64px -20px rgba(0, 0, 0, 0.7);
+}
+
+/* Reflejo en la esquina superior izquierda del borde */
+.frame::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 26%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.frame__corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 0 solid var(--accent);
+  pointer-events: none;
+}
+
+.frame__corner--tl { left: -7px; top: -7px; border-width: 2px 0 0 2px; border-top-left-radius: 12px; }
+.frame__corner--tr { right: -7px; top: -7px; border-width: 2px 2px 0 0; border-top-right-radius: 12px; }
+.frame__corner--bl { left: -7px; bottom: -7px; border-width: 0 0 2px 2px; border-bottom-left-radius: 12px; }
+.frame__corner--br { right: -7px; bottom: -7px; border-width: 0 2px 2px 0; border-bottom-right-radius: 12px; }
+
+/* ---------- Pestaña / etiqueta superior de un marco ---------- */
+.tab {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px;
+  border: 1px solid rgba(var(--accent-rgb), 0.38);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 45%),
+    linear-gradient(180deg, rgba(65, 59, 52, 0.97), rgba(41, 39, 36, 0.97));
+  box-shadow: var(--card-shadow);
+  color: var(--blanco);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tab__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab__title::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.8);
+}
+
+.tab__meta {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(var(--accent-rgb), 0.14);
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+/* ---------- Píldora / chip ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 15px;
+  border: 1px solid rgba(var(--accent-rgb), 0.38);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 50%),
+    rgba(56, 52, 47, 0.9);
+  box-shadow: 0 10px 26px -10px rgba(0, 0, 0, 0.6);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 9px rgba(var(--accent-rgb), 0.85);
+}
+
+/* ---------- Badge EN VIVO: punto sólido + anillo de pulso ---------- */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 17px 10px 15px;
+  border: 1px solid rgba(var(--coral-rgb), 0.5);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%),
+    rgba(56, 52, 47, 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 22px -6px rgba(var(--coral-rgb), 0.55),
+    0 14px 30px -12px rgba(0, 0, 0, 0.7);
+  color: var(--coral);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.live-dot {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+}
+
+.live-dot::before,
+.live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.live-dot::before {
+  z-index: 1;
+  box-shadow: 0 0 10px rgba(var(--coral-rgb), 0.9);
+}
+
+.live-dot::after {
+  animation: livePing 1.8s var(--ease-out) infinite;
+}
+
+@keyframes livePing {
+  0% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
+/* ---------- Marca compacta ---------- */
+.brand-mini {
+  font-family: var(--font-brand);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.brand-mini span {
+  color: var(--turquesa);
+}
+
+.sep {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(var(--accent-rgb), 0.7), rgba(255, 255, 255, 0));
+}
+
+/* ---------- Barra superior (escenas 03 y 04) ---------- */
+.topbar {
+  left: 32px;
+  top: 24px;
+  width: 1856px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 14px 0 22px;
+  border-radius: var(--radius-lg);
+}
+
+.topbar__logo {
+  width: 42px;
+  height: 42px;
+}
+
+.topbar__label {
+  color: var(--mostaza);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.topbar__sub {
+  color: rgba(233, 225, 212, 0.55);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.topbar__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ---------- Ticker ---------- */
+.ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70px;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--coral) 0%, var(--mostaza) 50%, var(--turquesa) 100%);
+  box-shadow: 0 -18px 40px -18px rgba(0, 0, 0, 0.6);
+}
+
+.ticker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 45%);
+  pointer-events: none;
+}
+
+.ticker__track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  white-space: nowrap;
+  color: var(--tinta);
+  font-family: var(--font-brand);
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: tickerMove 30s linear infinite;
+  will-change: transform;
+}
+
+.ticker__track span {
+  padding: 0 30px;
+}
+
+@keyframes tickerMove {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ---------- Motion: entrada en cascada al activarse la escena ----------
+   js/scene.js añade .is-playing al <body> cuando la fuente se activa en OBS
+   (o al cargar en un navegador normal). Cada elemento .enter usa --i para
+   escalonar su entrada 50 ms respecto del anterior.                        */
+.is-playing .enter {
+  animation: changoEnter var(--enter-duration) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger));
+}
+
+.is-standby .enter {
+  opacity: 0;
+}
+
+.enter--left  { --from-x: -28px; --from-y: 0px; }
+.enter--right { --from-x: 28px;  --from-y: 0px; }
+.enter--down  { --from-x: 0px;   --from-y: -18px; }
+.enter--scale { --from-x: 0px;   --from-y: 0px; --from-s: 0.96; }
+
+@keyframes changoEnter {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--from-x, 0px), var(--from-y, 18px), 0) scale(var(--from-s, 0.985));
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glowBreath {
+  0%,
+  100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes floatMark {
+  0%,
+  100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  50% { transform: translate3d(0, -12px, 0) rotate(2deg); }
+}

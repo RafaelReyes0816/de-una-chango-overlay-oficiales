@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>02 - General (La Banda)</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .scene {
+      background: transparent;
+    }
+
+    /* Marco general de la cámara completa */
+    .cam-frame {
+      position: absolute;
+      inset: 20px;
+      border-radius: 22px;
+      border: 1px solid rgba(44, 234, 163, 0.48);
+      box-shadow:
+        0 0 0 1px rgba(7, 17, 31, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 0 48px rgba(7, 17, 31, 0.26);
+      pointer-events: none;
+    }
+
+    .cam-frame .frame__corner {
+      width: 34px;
+      height: 34px;
+      border-color: var(--mostaza);
+    }
+
+    /* Sello de marca superior izquierdo */
+    .brand-stamp {
+      left: 36px;
+      top: 36px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 20px 0 14px;
+      border-radius: 16px;
+    }
+
+    .brand-stamp img {
+      width: 36px;
+      height: 36px;
+    }
+
+    .brand-stamp__title {
+      font-family: var(--font-brand);
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .brand-stamp__title span {
+      color: var(--turquesa);
+    }
+
+    .brand-stamp__sub {
+      margin-top: 2px;
+      color: rgba(247, 250, 252, 0.62);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    /* Cluster superior derecho: En vivo + Tag de cámara */
+    .top-hud {
+      position: absolute;
+      right: 36px;
+      top: 36px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Marco Bento para el Chat (Chat del Stream en pos 1480,186 · 300x712) */
+    .chat-bento {
+      position: absolute;
+      left: 1480px;
+      top: 148px;
+      width: 300px;
+      height: 750px;
+      border-radius: 18px;
+      border: 1px solid rgba(229, 184, 75, 0.55);
+      background: transparent;
+      box-shadow:
+        0 0 0 1px rgba(7, 17, 31, 0.65),
+        0 22px 50px -14px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .chat-bento__head {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(229, 184, 75, 0.35);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 48%),
+        linear-gradient(90deg, rgba(16, 36, 61, 0.98), rgba(11, 25, 44, 0.98));
+      color: var(--mostaza);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .chat-bento__title {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .chat-bento__title::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      background: var(--mostaza);
+      box-shadow: 0 0 8px rgba(229, 184, 75, 0.85);
+    }
+
+    /* Lower Third Bento */
+    .lower-bento {
+      left: 36px;
+      top: 824px;
+      width: 1120px;
+      height: 152px;
+      display: flex;
+      align-items: stretch;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: opacity 0.38s var(--ease-out), transform 0.38s var(--ease-out);
+    }
+
+    .lower-bento.is-hidden {
+      opacity: 0 !important;
+      transform: translate3d(-18px, 12px, 0) scale(0.98) !important;
+      pointer-events: none;
+    }
+
+    .lower-bento__bar {
+      width: 8px;
+      background: linear-gradient(180deg, var(--turquesa), var(--mostaza), var(--coral));
+    }
+
+    .lower-bento__body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 7px;
+      padding: 20px 28px;
+    }
+
+    .lower-bento__kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--turquesa);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .lower-bento__kicker::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--turquesa);
+      box-shadow: 0 0 9px var(--turquesa);
+    }
+
+    .lower-bento__title {
+      font-family: var(--font-brand);
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--blanco);
+    }
+
+    .lower-bento__sub {
+      color: rgba(247, 250, 252, 0.72);
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .lower-bento__sub span {
+      color: var(--mostaza);
+      font-weight: 800;
+    }
+
+    .lower-bento__side {
+      width: 210px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 18px;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      background:
+        linear-gradient(135deg, rgba(242, 100, 68, 0.22) 0%, rgba(242, 100, 68, 0.05) 100%);
+    }
+
+    .lower-bento__side-label {
+      color: rgba(247, 250, 252, 0.56);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .lower-bento__side-handle {
+      color: var(--coral);
+      font-family: var(--font-brand);
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+  </style>
+</head>
+<body class="scene scene-overlay">
+  <div class="cam-frame enter enter--scale" style="--i: 0">
+    <span class="frame__corner frame__corner--tl"></span>
+    <span class="frame__corner frame__corner--tr"></span>
+    <span class="frame__corner frame__corner--bl"></span>
+    <span class="frame__corner frame__corner--br"></span>
+  </div>
+
+  <div class="card card--accent brand-stamp enter enter--down" data-accent="turquesa" style="--i: 1">
+    <img src="assets/logo-mark.svg" alt="">
+    <div>
+      <div class="brand-stamp__title">DE UNA, <span>CHANGO!</span></div>
+      <div class="brand-stamp__sub">Desde Tarija para el mundo</div>
+    </div>
+  </div>
+
+  <div class="top-hud enter enter--down" style="--i: 2">
+    <div class="pill" data-accent="turquesa">
+      <span class="pill__dot"></span>
+      <span>Cam 1 · Mesa general</span>
+    </div>
+    <div class="live-badge">
+      <span class="live-dot"></span> En vivo
+    </div>
+  </div>
+
+  <div class="chat-bento enter enter--right" style="--i: 3">
+    <div class="chat-bento__head">
+      <span class="chat-bento__title">Chat del stream</span>
+      <span class="live-dot"></span>
+    </div>
+  </div>
+
+  <div class="card card--accent lower-bento enter enter--left" id="general-lower-card" data-accent="turquesa" style="--i: 4">
+    <div class="lower-bento__bar"></div>
+    <div class="lower-bento__body">
+      <div class="lower-bento__kicker" id="general-kicker">De una, Chango! · La banda</div>
+      <div class="lower-bento__title" id="general-title">Desde Tarija para el mundo</div>
+      <div class="lower-bento__sub"><span id="general-sub" style="color: inherit; font-weight: inherit;">Tecnología, demos en vivo y buena vibra</span> · <span id="hashtag">#DeUnaChango</span></div>
+    </div>
+    <div class="lower-bento__side">
+      <div class="lower-bento__side-label">Síguenos en redes</div>
+      <div class="lower-bento__side-handle" id="redes">@deunachango</div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script src="js/scene.js"></script>
+  <script>
+    (function () {
+      function applyConfig(cfg) {
+        if (!cfg) {
+          return;
+        }
+        var setText = window.ChangoLive ? window.ChangoLive.setText : function (el, val) {
+          if (el) el.textContent = val;
+        };
+        if (cfg.redes) {
+          setText(document.getElementById("redes"), cfg.redes);
+        }
+        if (cfg.hashtag) {
+          setText(document.getElementById("hashtag"), cfg.hashtag);
+        }
+        var gl = cfg.generalLower || {};
+        if (gl.kicker) {
+          setText(document.getElementById("general-kicker"), gl.kicker);
+        }
+        if (gl.title) {
+          setText(document.getElementById("general-title"), gl.title);
+        }
+        if (gl.sub) {
+          setText(document.getElementById("general-sub"), gl.sub);
+        }
+        var card = document.getElementById("general-lower-card");
+        if (card) {
+          card.classList.toggle("is-hidden", gl.visible === false);
+        }
+      }
+
+      applyConfig(window.CHANGO_CONFIG || {});
+
+      if (window.ChangoLive) {
+        window.ChangoLive.subscribe(function (nextState) {
+          applyConfig(nextState);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

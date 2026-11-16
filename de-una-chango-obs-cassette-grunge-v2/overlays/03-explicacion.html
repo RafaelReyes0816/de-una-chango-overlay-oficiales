@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>03 - Explicación (Pizarra) · Cassette Grunge</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .scene {
+      background: transparent;
+    }
+
+    /* Pestaña superior del PIP (fuera del área 514x289 de Cam 1 en pos 1363,742) */
+    .pip-tab {
+      left: 1360px;
+      top: 702px;
+      width: 520px;
+      height: 36px;
+      border-radius: 12px 12px 4px 4px;
+    }
+
+    /* Marco de la ventana PIP: centro 100 % transparente para no tapar Cam 1 */
+    .pip-window {
+      left: 1363px;
+      top: 742px;
+      width: 514px;
+      height: 289px;
+      border-radius: 12px;
+      background: transparent;
+    }
+
+    /* Etiqueta inferior elegante fuera del área visible de la cámara (y=1035..1067) */
+    .pip-caption {
+      position: absolute;
+      left: 1360px;
+      top: 1035px;
+      width: 520px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px 4px 12px 12px;
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      color: rgba(233, 225, 212, 0.78);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .pip-caption__left {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pip-caption__left::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--turquesa);
+      box-shadow: 0 0 8px var(--turquesa);
+    }
+
+    .pip-caption__right {
+      color: var(--mostaza);
+    }
+
+    .board-tag {
+      position: absolute;
+      right: 32px;
+      top: 112px;
+    }
+  </style>
+  <link rel="stylesheet" href="css/cassette-grunge.css">
+</head>
+<body class="scene scene-overlay">
+  <header class="card card--accent topbar enter enter--down" data-accent="turquesa" style="--i: 0">
+    <img class="topbar__logo" src="assets/logo-mark.svg" alt="">
+    <div class="brand-mini">DE UNA, <span>CHANGO!</span></div>
+    <div class="sep" data-accent="turquesa"></div>
+    <div class="topbar__label">Explicación · Pizarra</div>
+    <div class="topbar__sub">Tarija, Bolivia</div>
+    <div class="topbar__right">
+      <span class="live-badge"><span class="live-dot"></span> En vivo</span>
+    </div>
+  </header>
+
+  <div class="pill board-tag enter enter--right" data-accent="mostaza" style="--i: 1">
+    <span class="pill__dot"></span>
+    <span>Cam 2 · Pizarra</span>
+  </div>
+
+  <!-- Ventana PIP de Cam 1 (pos 1363,742 · 514x289): centro 100 % transparente -->
+  <div class="tab pip-tab enter enter--right" data-accent="coral" style="--i: 2">
+    <span class="tab__title">Cam 1 · Mesa general</span>
+    <span class="tab__meta">PIP</span>
+  </div>
+
+  <div class="frame frame--matte pip-window enter enter--scale" data-accent="coral" style="--i: 3">
+    <span class="frame__corner frame__corner--tr"></span>
+    <span class="frame__corner frame__corner--bl"></span>
+  </div>
+
+  <div class="pip-caption enter" style="--i: 4">
+    <span class="pip-caption__left" id="pip-lema">Desde Tarija para el mundo</span>
+    <span class="pip-caption__right" id="pip-redes">@deunachango</span>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script src="js/scene.js"></script>
+  <script>
+    (function () {
+      function applyConfig(cfg) {
+        if (!cfg) {
+          return;
+        }
+        var setText = window.ChangoLive ? window.ChangoLive.setText : function (el, val) {
+          if (el) el.textContent = val;
+        };
+        if (cfg.lema) {
+          setText(document.getElementById("pip-lema"), cfg.lema);
+        }
+        if (cfg.redes) {
+          setText(document.getElementById("pip-redes"), cfg.redes);
+        }
+      }
+
+      applyConfig(window.CHANGO_CONFIG || {});
+
+      if (window.ChangoLive) {
+        window.ChangoLive.subscribe(function (nextState) {
+          applyConfig(nextState);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

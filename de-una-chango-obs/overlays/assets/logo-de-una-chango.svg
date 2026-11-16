@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="DE UNA, CHANGO!">
+  <defs>
+    <linearGradient id="rule" x1="40" y1="0" x2="780" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2CEAA3"/>
+      <stop offset="0.52" stop-color="#E5B84B"/>
+      <stop offset="1" stop-color="#F26444"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="930" y1="36" x2="1040" y2="260" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F26444"/>
+      <stop offset="1" stop-color="#E5B84B"/>
+    </linearGradient>
+  </defs>
+  <text x="42" y="134" fill="#F26444" font-family="Montserrat, Arial Black, Segoe UI, sans-serif" font-size="112" font-weight="900" letter-spacing="-6">DE UNA,</text>
+  <text x="42" y="262" fill="#2CEAA3" font-family="Montserrat, Arial Black, Segoe UI, sans-serif" font-size="156" font-weight="900" letter-spacing="-8">CHANGO!</text>
+  <rect x="46" y="288" width="720" height="9" rx="4.5" fill="url(#rule)"/>
+  <path d="M982 38 900 166h58l-14 92 92-136h-60l6-84Z" fill="url(#bolt)" stroke="#07111F" stroke-width="7" stroke-linejoin="round"/>
+  <circle cx="1066" cy="96" r="9" fill="#2CEAA3"/>
+  <circle cx="874" cy="252" r="6" fill="#E5B84B"/>
+</svg>

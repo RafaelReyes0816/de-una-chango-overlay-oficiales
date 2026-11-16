@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1856, height=84">
+  <title>Datos y Redes · Cassette Grunge</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .datos-bar {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 0 26px;
+      border-radius: 14px;
+    }
+
+    .datos-bar__left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .datos-bar__mark {
+      width: 38px;
+      height: 38px;
+    }
+
+    .datos-bar__title {
+      color: var(--blanco);
+      font-family: var(--font-brand);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .datos-bar__title span {
+      color: var(--turquesa);
+    }
+
+    .datos-bar__sub {
+      margin-top: 4px;
+      color: rgba(233, 225, 212, 0.56);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .datos-bar__right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  </style>
+  <link rel="stylesheet" href="css/cassette-grunge.css">
+</head>
+<body class="scene scene-overlay">
+  <div class="card card--accent datos-bar enter" data-accent="turquesa" style="--i: 0">
+    <div class="datos-bar__left">
+      <img class="datos-bar__mark" src="assets/logo-mark.svg" alt="">
+      <div>
+        <div class="datos-bar__title">DE UNA, <span>CHANGO!</span></div>
+        <div class="datos-bar__sub" id="lema">Desde Tarija para el mundo</div>
+      </div>
+    </div>
+    <div class="datos-bar__right">
+      <span class="pill" data-accent="turquesa"><span class="pill__dot"></span><span id="redes">@deunachango</span></span>
+      <span class="pill" data-accent="mostaza"><span class="pill__dot"></span><span id="hashtag">#DeUnaChango</span></span>
+      <span class="pill" data-accent="coral"><span class="pill__dot"></span><span id="ciudad">Tarija · Bolivia</span></span>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script src="js/scene.js"></script>
+  <script>
+    (function () {
+      function applyConfig(cfg) {
+        if (!cfg) {
+          return;
+        }
+        var setText = window.ChangoLive ? window.ChangoLive.setText : function (el, val) {
+          if (el) el.textContent = val;
+        };
+        if (cfg.redes) {
+          setText(document.getElementById("redes"), cfg.redes);
+        }
+        if (cfg.hashtag) {
+          setText(document.getElementById("hashtag"), cfg.hashtag);
+        }
+        if (cfg.ciudad) {
+          setText(document.getElementById("ciudad"), cfg.ciudad);
+        }
+        if (cfg.lema) {
+          setText(document.getElementById("lema"), cfg.lema);
+        }
+      }
+
+      applyConfig(window.CHANGO_CONFIG || {});
+
+      if (window.ChangoLive) {
+        window.ChangoLive.subscribe(function (nextState) {
+          applyConfig(nextState);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

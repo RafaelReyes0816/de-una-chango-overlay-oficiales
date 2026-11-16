@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <title>04 - Modo Hacemos (Demos) · Cassette Grunge</title>
+  <link rel="stylesheet" href="css/chango.css">
+  <style>
+    .scene {
+      background: transparent;
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 15px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--mostaza), #B5A642);
+      color: var(--tinta);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .mode-pill::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    /* Marco de Demos: Captura PC Demos está en pos (32,236) · 1152x648 */
+    .demo-tab {
+      left: 32px;
+      top: 196px;
+      width: 1152px;
+      height: 36px;
+      border-radius: 12px 12px 4px 4px;
+    }
+
+    .demo-window {
+      left: 32px;
+      top: 236px;
+      width: 1152px;
+      height: 648px;
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .demo-foot {
+      left: 32px;
+      top: 888px;
+      width: 1152px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      border-radius: 4px 4px 14px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .demo-foot__left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--turquesa);
+      font-weight: 900;
+    }
+
+    .demo-foot__right {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(233, 225, 212, 0.72);
+    }
+
+    .demo-foot__right strong {
+      color: var(--mostaza);
+    }
+
+    /* Marco del Chat: Chat del Stream en pos (1200,236) · 300x712 */
+    .chat-tab {
+      left: 1200px;
+      top: 196px;
+      width: 300px;
+      height: 36px;
+      border-radius: 12px 12px 4px 4px;
+    }
+
+    .chat-window {
+      left: 1200px;
+      top: 236px;
+      width: 300px;
+      height: 712px;
+      border-radius: 4px 4px 14px 14px;
+      background: transparent;
+    }
+
+    /* 3 Cámaras en columna derecha:
+       Cam 1: pos (1516,231) · 372x209  (coral)
+       Cam 2: pos (1516,485) · 372x209  (mostaza)
+       Cam 3: pos (1516,739) · 372x209  (turquesa) */
+    .cam-tab {
+      left: 1516px;
+      width: 372px;
+      height: 29px;
+      padding: 0 12px;
+      border-radius: 10px 10px 3px 3px;
+      font-size: 10px;
+    }
+
+    .cam-tab--1 { top: 198px; }
+    .cam-tab--2 { top: 452px; }
+    .cam-tab--3 { top: 706px; }
+
+    .cam-slot {
+      left: 1516px;
+      width: 372px;
+      height: 209px;
+      border-radius: 4px 4px 12px 12px;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    .cam-slot--1 { top: 231px; }
+    .cam-slot--2 { top: 485px; }
+    .cam-slot--3 { top: 739px; }
+
+    /* Lower Third minimalista en la esquina inferior de cada cámara */
+    .cam-lt {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      max-width: calc(100% - 20px);
+      display: inline-flex;
+      align-items: stretch;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 9px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(90deg, rgba(41, 39, 36, 0.94), rgba(56, 52, 47, 0.9));
+      box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.78);
+      overflow: hidden;
+    }
+
+    .cam-lt__bar {
+      width: 4px;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.9);
+    }
+
+    .cam-lt__body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1px;
+      padding: 5px 12px 6px 10px;
+      min-width: 0;
+    }
+
+    .cam-lt__name {
+      color: var(--blanco);
+      font-family: var(--font-brand);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cam-lt__sub {
+      color: var(--accent);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .datos-rule {
+      position: absolute;
+      left: 32px;
+      top: 956px;
+      width: 1856px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--turquesa), var(--mostaza), var(--coral));
+      opacity: 0.85;
+    }
+  </style>
+  <link rel="stylesheet" href="css/cassette-grunge.css">
+</head>
+<body class="scene scene-overlay">
+  <header class="card card--accent topbar enter enter--down" data-accent="turquesa" style="--i: 0">
+    <img class="topbar__logo" src="assets/logo-mark.svg" alt="">
+    <div class="brand-mini">DE UNA, <span>CHANGO!</span></div>
+    <div class="sep" data-accent="mostaza"></div>
+    <div class="mode-pill">Modo hacemos</div>
+    <div class="topbar__sub">Tecnología en vivo · Tarija, Bolivia</div>
+    <div class="topbar__right">
+      <span class="live-badge"><span class="live-dot"></span> En vivo</span>
+    </div>
+  </header>
+
+  <!-- Captura PC Demos (pos 32,236 · 1152x648) -->
+  <div class="tab demo-tab enter enter--left" data-accent="turquesa" style="--i: 1">
+    <span class="tab__title">Captura PC Demos · Clareth y Emilse</span>
+    <span class="tab__meta">EN PANTALLA</span>
+  </div>
+
+  <div class="frame frame--matte demo-window enter enter--scale" data-accent="turquesa" style="--i: 2">
+    <span class="frame__corner frame__corner--tl"></span>
+    <span class="frame__corner frame__corner--br"></span>
+  </div>
+
+  <div class="card card--accent demo-foot enter" data-accent="turquesa" style="--i: 3">
+    <span class="demo-foot__left"><span class="live-dot"></span> Ahora en pantalla · Demo en vivo</span>
+    <span class="demo-foot__right">
+      <span id="demo-reto">RETO #001: IA PARA EMPRENDER</span>
+      <span>·</span>
+      <strong id="demo-redes">@deunachango</strong>
+    </span>
+  </div>
+
+  <!-- Chat del Stream (pos 1200,236 · 300x712) -->
+  <div class="tab chat-tab enter enter--down" data-accent="mostaza" style="--i: 2">
+    <span class="tab__title">Chat del stream</span>
+    <span class="live-dot"></span>
+  </div>
+
+  <div class="frame chat-window enter enter--scale" data-accent="mostaza" style="--i: 3"></div>
+
+  <!-- Cam 1: Coral (pos 1516,231 · 372x209) -->
+  <div class="tab cam-tab cam-tab--1 enter enter--right" data-accent="coral" style="--i: 3">
+    <span class="tab__title">Cam 1 · Mesa general</span>
+    <span class="tab__meta">01</span>
+  </div>
+  <div class="frame frame--matte cam-slot cam-slot--1 enter enter--right" data-accent="coral" style="--i: 4">
+    <div class="cam-lt" data-accent="coral">
+      <div class="cam-lt__bar"></div>
+      <div class="cam-lt__body">
+        <div class="cam-lt__name" id="cam1-name">La Banda</div>
+        <div class="cam-lt__sub" id="cam1-sub">Mesa general · Cam 01</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cam 2: Mostaza (pos 1516,485 · 372x209) -->
+  <div class="tab cam-tab cam-tab--2 enter enter--right" data-accent="mostaza" style="--i: 4">
+    <span class="tab__title">Cam 2 · Pizarra</span>
+    <span class="tab__meta">02</span>
+  </div>
+  <div class="frame frame--matte cam-slot cam-slot--2 enter enter--right" data-accent="mostaza" style="--i: 5">
+    <div class="cam-lt" data-accent="mostaza">
+      <div class="cam-lt__bar"></div>
+      <div class="cam-lt__body">
+        <div class="cam-lt__name" id="cam2-name">Pizarra en vivo</div>
+        <div class="cam-lt__sub" id="cam2-sub">Explicación · Cam 02</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cam 3: Turquesa (pos 1516,739 · 372x209) -->
+  <div class="tab cam-tab cam-tab--3 enter enter--right" data-accent="turquesa" style="--i: 5">
+    <span class="tab__title">Cam 3 · Chicas</span>
+    <span class="tab__meta">03</span>
+  </div>
+  <div class="frame frame--matte cam-slot cam-slot--3 enter enter--right" data-accent="turquesa" style="--i: 6">
+    <div class="cam-lt" data-accent="turquesa">
+      <div class="cam-lt__bar"></div>
+      <div class="cam-lt__body">
+        <div class="cam-lt__name" id="cam3-name">Clareth &amp; Emilse</div>
+        <div class="cam-lt__sub" id="cam3-sub">Demos en vivo · Cam 03</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="datos-rule enter" style="--i: 6"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/live.js"></script>
+  <script src="js/scene.js"></script>
+  <script>
+    (function () {
+      var setText = window.ChangoLive ? window.ChangoLive.setText : function (el, val) {
+        if (el) el.textContent = val;
+      };
+
+      function applyCam(cams, slotKey, nameId, subId) {
+        var entry = cams && cams[slotKey];
+        if (!entry) {
+          return;
+        }
+        if (typeof entry === "string") {
+          setText(document.getElementById(nameId), entry);
+          return;
+        }
+        if (entry.nombre) {
+          setText(document.getElementById(nameId), entry.nombre);
+        }
+        if (entry.subtitulo) {
+          setText(document.getElementById(subId), entry.subtitulo);
+        }
+      }
+
+      function applyConfig(cfg) {
+        if (!cfg) {
+          return;
+        }
+        if (cfg.reto) {
+          setText(document.getElementById("demo-reto"), cfg.reto);
+        }
+        if (cfg.redes) {
+          setText(document.getElementById("demo-redes"), cfg.redes);
+        }
+        var cams = cfg.camaras || {};
+        applyCam(cams, "cam1", "cam1-name", "cam1-sub");
+        applyCam(cams, "cam2", "cam2-name", "cam2-sub");
+        applyCam(cams, "cam3", "cam3-name", "cam3-sub");
+      }
+
+      applyConfig(window.CHANGO_CONFIG || {});
+
+      if (window.ChangoLive) {
+        window.ChangoLive.subscribe(function (nextState) {
+          applyConfig(nextState);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

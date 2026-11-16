@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Marca DE UNA, CHANGO!">
+  <defs>
+    <linearGradient id="ring" x1="72" y1="64" x2="438" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2CEAA3"/>
+      <stop offset="0.55" stop-color="#E5B84B"/>
+      <stop offset="1" stop-color="#F26444"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="190" y1="92" x2="322" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F26444"/>
+      <stop offset="1" stop-color="#E5B84B"/>
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="228" fill="#0B192C" stroke="url(#ring)" stroke-width="16"/>
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#2CEAA3" stroke-opacity="0.22" stroke-width="2" stroke-dasharray="10 14"/>
+  <path d="M286 84 148 286h90l-20 142 150-220h-96l14-124Z" fill="url(#bolt)" stroke="#07111F" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M342 118c34 26 56 66 58 112" fill="none" stroke="#2CEAA3" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="404" cy="250" r="13" fill="#2CEAA3"/>
+  <circle cx="108" cy="344" r="9" fill="#E5B84B"/>
+  <circle cx="382" cy="388" r="7" fill="#F26444"/>
+</svg>

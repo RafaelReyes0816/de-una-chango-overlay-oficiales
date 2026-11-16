@@ -1,0 +1,24 @@
+# Normaliza a LF en el repositorio; las herramientas de Windows se fuerzan a CRLF al hacer checkout.
+* text=auto eol=lf
+
+# Scripts de Windows: siempre CRLF para compatibilidad con cmd.exe y PowerShell
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Scripts de shell: siempre LF
+*.sh text eol=lf
+
+# Binarios (no tocar)
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.svg  text
+*.woff  binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.mp3  binary
+*.webm binary

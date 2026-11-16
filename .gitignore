@@ -1,0 +1,12 @@
+# Backups locales generados por los instaladores
+*.bak-*
+*.bak
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
